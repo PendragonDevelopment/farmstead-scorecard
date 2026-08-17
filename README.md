@@ -6,7 +6,9 @@ on a consistent basis so properties can be compared against each other rather th
 
 ## Live tool
 
-https://pendragondevelopment.github.io/farmstead-scorecard/
+https://farmstead-scorecard.pages.dev/
+
+Enter the shared passphrase once per device to sync with the property database.
 
 ## How it works
 
@@ -29,16 +31,16 @@ of how well it scores elsewhere:
 Each criterion scores 0–4. The weighted total runs 0–100. Above 70 stamps as Shortlist,
 50–70 as Worth a look.
 
-## Data and privacy
+## Data and syncing
 
-Everything is stored in your browser's local storage. Nothing is uploaded anywhere and
-there is no backend. That means data is **per browser and per device** — what you enter
-on your phone will not appear on your laptop.
+Property cards are stored in a shared database so the same set is available on every device.
+The tool is **offline-first**: edits save to the browser immediately and sync to the database
+when there is a connection, which matters when you are scoring in a driveway with no signal.
+Sync uses last-write-wins per property, so two people touring separately can each edit and the
+newest change to a given card wins. Deletes propagate too.
 
-Use **Export** to download a JSON file and **Import** to load it elsewhere. Import merges
-by property, so two people touring separately can combine their cards without losing work.
-
-Clearing browser data will erase saved properties. Export before you do.
+Access is gated by a **shared passphrase**, checked server-side; you enter it once per device.
+**Export** still downloads a JSON file and **Import** merges one back in, as an offline fallback.
 
 ## Before you tour
 
@@ -47,12 +49,39 @@ Two things worth pulling in advance, since they score better from a desk than a 
 - **NYSDOT traffic counts** — annual average daily traffic by road segment, for the cafe frontage
 - **NRCS Web Soil Survey** — soil classification for the parcel
 
+## Architecture
+
+Everything runs on Cloudflare, deployed from this repo:
+
+- **Frontend** — `public/index.html`, a single self-contained file (no build step).
+- **API** — Cloudflare Pages Functions under `functions/api/` (`login`, `session`, `logout`, `properties`).
+- **Database** — Cloudflare D1 (SQLite). Schema in `migrations/`.
+- **Auth** — the passphrase is compared server-side; a signed, HttpOnly cookie authorizes API calls.
+  The database credentials never reach the browser. Secrets (`APP_PASSPHRASE`, `AUTH_SECRET`) are
+  stored as Cloudflare secrets, never in the repo.
+
 ## Running locally
 
-No build step and no dependencies. Open `index.html` in a browser, or:
+Requires Node 22 (pinned via `mise.toml`) and the Cloudflare `wrangler` CLI.
 
 ```
-python3 -m http.server 8000
+npm install
+npm run db:migrate:local   # one time: set up the local D1 database
+npm run dev                # serves at http://127.0.0.1:8788 with a local D1 + .dev.vars
 ```
 
-Web fonts load from Google Fonts; the tool falls back to system fonts offline.
+Create a `.dev.vars` file (git-ignored) with local secrets:
+
+```
+APP_PASSPHRASE="your local passphrase"
+AUTH_SECRET="any-random-string-for-local-dev"
+```
+
+## Deploying
+
+```
+npm run db:migrate         # apply new migrations to the remote D1 (when the schema changes)
+npm run deploy             # deploy the frontend + Functions to Cloudflare Pages
+```
+
+Production secrets are set once with `wrangler pages secret put APP_PASSPHRASE` and `AUTH_SECRET`.

@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "farmstead-scorecard",
+  "pages_build_output_dir": "./public",
+  "compatibility_date": "2025-08-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "farmstead-scorecard",
+      "database_id": "bf87661c-d3a7-433c-881f-506276a17928"
+    }
+  ]
+}

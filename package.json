@@ -1,0 +1,18 @@
+{
+  "name": "farmstead-scorecard",
+  "version": "1.0.0",
+  "description": "A parcel screening tool for evaluating candidate farmsteads in upstate New York — scoring land cost, regulatory posture, roadside cafe viability, and buildout potential on a consistent basis so properties can be compared against each other rather than by feel.",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler pages dev --port 8788 --ip 127.0.0.1",
+    "deploy": "wrangler pages deploy --branch main --commit-dirty=true",
+    "db:migrate:local": "wrangler d1 migrations apply farmstead-scorecard --local",
+    "db:migrate": "wrangler d1 migrations apply farmstead-scorecard --remote"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "^4.123.0"
+  }
+}
