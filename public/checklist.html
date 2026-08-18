@@ -1,0 +1,303 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forest Heights — Readiness Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#F0EDE3; --paper-2:#E5E1D3; --ink:#22261F; --ink-soft:#5C6152;
+  --rule:#B4AF9B; --ochre:#B57B2E; --olive:#5E6B3A; --oxide:#9C3A28; --pond:#2E5F6B;
+  --disp:'Zilla Slab',Georgia,serif; --body:'Karla',system-ui,sans-serif; --data:'Space Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--paper-2) 1px,transparent 1px);background-size:100% 28px}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px 90px}
+
+header.mast{border-bottom:2.5px solid var(--ink);margin-bottom:20px;padding:26px 0 14px}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(28px,5.5vw,42px);letter-spacing:-.02em;margin:0;line-height:1}
+.sub{font-family:var(--data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+
+/* progress rail */
+.rail{display:flex;gap:2px;margin:18px 0 6px;border:1.5px solid var(--ink);padding:2px;background:var(--paper-2)}
+.rail div{height:14px;background:var(--olive);transition:width .3s}
+.railkey{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--data);font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:20px}
+.railkey b{color:var(--ink);font-weight:700}
+
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+button{font-family:var(--body);font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--ink);
+  background:var(--paper);color:var(--ink);padding:8px 13px;border-radius:2px;transition:background .12s,color .12s}
+button:hover{background:var(--ink);color:var(--paper)}
+button:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+button.ghost{border-color:var(--rule);color:var(--ink-soft);font-weight:500}
+button.ghost:hover{background:var(--rule);color:var(--ink)}
+.filt{font-family:var(--data);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px}
+.filt[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.btnlike{display:inline-block;font-family:var(--body);font-size:13px;font-weight:500;cursor:pointer;
+  border:1.5px solid var(--rule);color:var(--ink-soft);padding:8px 13px;border-radius:2px}
+.btnlike:hover{background:var(--rule);color:var(--ink)}
+.savetag{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);opacity:0;transition:opacity .25s}
+.savetag.on{opacity:1}
+
+section.ws{margin-bottom:34px}
+.wshead{border-top:2px solid var(--ink);padding-top:9px;margin-bottom:4px;display:flex;
+  justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.wshead h2{font-family:var(--disp);font-size:20px;font-weight:600;margin:0}
+.wscount{font-family:var(--data);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.wsnote{font-size:13px;color:var(--ink-soft);margin:0 0 10px}
+
+.item{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--rule);align-items:flex-start}
+.item:last-child{border-bottom:none}
+.box{flex-shrink:0;width:22px;height:22px;border:2px solid var(--ink);background:var(--paper);
+  border-radius:2px;cursor:pointer;padding:0;position:relative;margin-top:1px}
+.box:hover{background:var(--paper-2)}
+.box[aria-pressed="true"]{background:var(--olive);border-color:var(--olive)}
+.box[aria-pressed="true"]::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;
+  border:solid var(--paper);border-width:0 2.5px 2.5px 0;transform:rotate(42deg)}
+.itxt{flex:1;min-width:0}
+.ttl{font-weight:700;font-size:15px}
+.why{font-size:13px;color:var(--ink-soft);margin-top:1px}
+.done .ttl{text-decoration:line-through;color:var(--ink-soft);text-decoration-thickness:1.5px}
+.tier{flex-shrink:0;font-family:var(--data);font-size:9px;font-weight:700;letter-spacing:.08em;
+  padding:2px 6px;border:1.5px solid currentColor;border-radius:2px;margin-top:3px}
+.t1{color:var(--oxide)} .t2{color:var(--ochre)} .t3{color:var(--pond)}
+.stampdate{font-family:var(--data);font-size:10px;letter-spacing:.08em;color:var(--olive);
+  text-transform:uppercase;margin-top:3px}
+.noteline{width:100%;margin-top:7px;font-family:var(--body);font-size:13px;padding:6px 8px;
+  border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:2px;resize:vertical}
+.noteline:focus{outline:none;border-color:var(--ochre)}
+.notebtn{background:none;border:none;color:var(--ink-soft);font-family:var(--data);font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;padding:3px 0;cursor:pointer;font-weight:400}
+.notebtn:hover{background:none;color:var(--ochre);text-decoration:underline}
+
+.foot{position:sticky;bottom:0;background:var(--paper);border-top:2.5px solid var(--ink);
+  padding:11px 0;display:flex;gap:18px;align-items:center;flex-wrap:wrap;z-index:5;
+  box-shadow:0 -10px 18px -12px rgba(34,38,31,.4)}
+.foot .big{font-family:var(--data);font-weight:700;font-size:26px;line-height:1}
+.foot .lab{font-family:var(--data);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft)}
+.callout{border-left:3px solid var(--oxide);padding:8px 0 8px 13px;margin:0 0 24px;font-size:14px}
+.callout b{font-family:var(--disp);font-size:15px}
+@media (max-width:560px){.foot{gap:12px}.foot .big{font-size:21px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <h1>Readiness Checklist</h1>
+  <div class="sub">Forest Heights · Farm + cafe, cabins later · Not a countdown</div>
+</header>
+
+<div class="callout">
+  <b>If capacity contracts, shrink to two things:</b> the farm work and the coursework.
+  Those alone keep everything else viable. Everything else can pause without cost.
+</div>
+
+<div class="rail" id="rail"></div>
+<div class="railkey" id="railkey"></div>
+
+<div class="bar">
+  <button class="filt" id="f-all" aria-pressed="true" onclick="setFilter('all')">All</button>
+  <button class="filt" id="f-1" aria-pressed="false" onclick="setFilter('1')">Tier 1</button>
+  <button class="filt" id="f-2" aria-pressed="false" onclick="setFilter('2')">Tier 2</button>
+  <button class="filt" id="f-3" aria-pressed="false" onclick="setFilter('3')">Tier 3</button>
+  <button class="filt" id="f-open" aria-pressed="false" onclick="setFilter('open')">Unfinished</button>
+  <button class="ghost" onclick="exportData()">Export</button>
+  <label class="btnlike" for="imp">Import</label>
+  <input id="imp" type="file" accept="application/json" hidden onchange="importData(this)">
+  <span id="savetag" class="savetag">Saved</span>
+</div>
+
+<div id="body"></div>
+
+<div class="foot">
+  <div><div class="big" id="pctBig">0%</div><div class="lab">Ready</div></div>
+  <div><div class="big" id="t1Big">0/0</div><div class="lab">Tier 1 done</div></div>
+  <div><div class="big" id="allBig">0/0</div><div class="lab">All items</div></div>
+</div>
+</div>
+
+<script>
+const WS=[
+{id:'exp',name:'Experience & eligibility',note:'The FSA clock. Highest priority \u2014 it is the only item that runs in real time.',items:[
+ {t:1,ttl:'Enroll in Cornell "Plan Your Farm"',why:'Free, self-paced, and the textbook for BF 101. Start here.'},
+ {t:1,ttl:'Write up both r\u00e9sum\u00e9s against the business-management allowance',why:'Personnel decisions, payroll, budgets, inventory, team size, duration. This is the document you hand a Farm Loan Officer.'},
+ {t:1,ttl:'Find paid part-time farm work locally',why:'Documented, with management exposure. Payroll records, W-2, and a letter. Counts the same wherever you do it.'},
+ {t:1,ttl:'Start a running experience log',why:'Hours, duties, decisions made, financial involvement. Contemporaneous records are far stronger than reconstructed ones.'},
+ {t:1,ttl:'FSA Farm Loan Officer appointment',why:'Which allowances they would credit, assess both of you separately, and ask about underserved-applicant targeting. Free, and possibly worth $125,000.'},
+ {t:2,ttl:'Cornell BF 101 \u2014 Starting at Square One',why:'Instructor-led, with feedback on your plans.'},
+ {t:2,ttl:'Cornell BF 102 \u2014 Exploring Markets and Profits',why:'Enterprise budgets and profitability. Feeds the lender package directly.'},
+ {t:2,ttl:'Cornell Access to Capital',why:'Built for people seeking funding for a farm enterprise.'},
+ {t:2,ttl:'ServSafe Manager certification',why:'Inexpensive, permanent, and it signals seriousness for the cafe.'},
+ {t:2,ttl:'Cornell Holistic Financial Planning',why:''},
+ {t:2,ttl:'Cornell Goat Production',why:'Decide dairy, meat, or fiber. Dairy carries a licensed creamery requirement.'},
+ {t:2,ttl:'Cornell Reading the Land',why:'Four-week land assessment intensive. Take it during the search, not after.'},
+ {t:2,ttl:'Alpaca Owners Association + find a regional mentor',why:'Least documented of your three species, most dependent on hands-on learning.'},
+ {t:3,ttl:'NOFA-NY winter conference',why:'Fifty growers in one weekend, and a reason for a winter trip north.'},
+ {t:3,ttl:'Understand NY Ag & Markets Article 20-C triggers',why:'Know what requires a food processing licence before designing the kitchen.'}
+]},
+{id:'house',name:'House',note:'Goal is able to list within 60 days of deciding to \u2014 not listed.',items:[
+ {t:1,ttl:'Two or three agent opinions of value',why:''},
+ {t:1,ttl:'Establish a net proceeds figure',why:'After commission, transfer taxes, payoff and repairs. Every Phase 1 number depends on this. Revisit annually.'},
+ {t:1,ttl:'CPA opinion on the capital gains exclusion',why:'$250,000 per qualifying individual. Unmarried co-owners may each claim against their share, but it depends on title and occupancy. Price it before listing.'},
+ {t:2,ttl:'Pre-listing inspection',why:'Finding problems before a buyer does is what protects the price.'},
+ {t:2,ttl:'Complete the punch list',why:'Deferred repairs become emergencies at the worst moment.'},
+ {t:2,ttl:'Sort belongings gradually',why:'Most household goods cost more to move 900 miles than to replace.'},
+ {t:3,ttl:'Choose the sequencing path',why:'Sell then rent in the target county is strongest. Alternatives: sell then buy remotely, or a contingent offer.'}
+]},
+{id:'site',name:'Site selection',note:'Know the market cold before you need to buy in it. The long runway works for you here.',items:[
+ {t:2,ttl:'Pull NYSDOT traffic counts for candidate corridors',why:'The single number that decides cafe viability. Under 2,000 vehicles a day is a hard sell.'},
+ {t:2,ttl:'NRCS Web Soil Survey screening',why:'Soil class, prime farmland designation, septic suitability.'},
+ {t:2,ttl:'NYSDEC Environmental Resource Mapper',why:'Wetlands, streams, protected habitat.'},
+ {t:2,ttl:'FEMA flood maps',why:'Floodplain across the buildable areas, not the whole parcel.'},
+ {t:2,ttl:'County agricultural district maps',why:'Enrollment activates \u00a7305-a protection for the farm and cafe.'},
+ {t:2,ttl:'Read town zoning codes and use tables',why:'Whether cabins are permitted, special-permit, or prohibited.'},
+ {t:2,ttl:'Autumn trip \u2014 see peak traffic',why:'A road that feels empty in October is dead in March.'},
+ {t:2,ttl:'Winter trip \u2014 drainage and access',why:'Snow shows road maintenance priority and which driveways are passable in February.'},
+ {t:2,ttl:'Score every parcel in the field card, including rejects',why:'The pattern across fifteen properties teaches more than any single card.'},
+ {t:3,ttl:'Meet town code enforcement officers',why:'Ask directly what it would take to put six cabins on the parcel.'},
+ {t:3,ttl:'Meet the County Agricultural & Farmland Protection Board',why:'Ag district status and the annual review window if not enrolled.'},
+ {t:3,ttl:'Meet the NRCS district conservationist',why:'Cost-share eligibility and a read on the land\u2019s real capacity.'},
+ {t:3,ttl:'Narrow to two or three parcels',why:''}
+]},
+{id:'legal',name:'Legal & protection',note:'Straightforward now. Fraught later. Do not defer these.',items:[
+ {t:1,ttl:'Cohabitation and property agreement',why:'If the farm is titled in one name for FSA, the other partner holds no legal interest in the home and largest asset.'},
+ {t:1,ttl:'Wills naming each other',why:'Unmarried partners have no automatic inheritance rights.'},
+ {t:1,ttl:'Durable powers of attorney and healthcare proxies',why:'No default standing without them.'},
+ {t:3,ttl:'Entity design with counsel',why:'Individual FSA borrower for the farm. CafeCo and LodgingCo for the outside founders.'},
+ {t:3,ttl:'Verify the FSA acreage limit',why:'Cannot own a farm greater than 30% of the county average farm size at application. Could cap initial acreage.'},
+ {t:3,ttl:'Verify the Down Payment purchase price ceiling',why:'$300,150 at 45% implies roughly $667,000. Confirm the current indexed figure.'}
+]},
+{id:'phase1',name:'Phase 1 groundwork',note:'Mostly for when a move becomes foreseeable \u2014 but two items are available now.',items:[
+ {t:2,ttl:'SBDC or SCORE business plan review',why:'Free, available locally right now, and an SBA lender takes the package more seriously for it.'},
+ {t:1,ttl:'Annual review \u2014 one evening a year',why:'Revisit the plan, update net proceeds, check whether program terms changed. The only cadence worth imposing.'},
+ {t:3,ttl:'NY FarmNet engagement (1-800-547-3276)',why:'Free, confidential, teams of two. Serves New York farms, so save this for when you have a site or are close.'},
+ {t:3,ttl:'Farm Credit East conversation',why:'Experience requirements set by the lender rather than FSA.'},
+ {t:3,ttl:'Capital Region SBA preferred lender conversation',why:'For the cafe and later the cabins.'},
+ {t:3,ttl:'Full farm business plan',why:''},
+ {t:3,ttl:'Track NY Beginning Farmer Grant round timing',why:'Up to $200,000 with a 5% match. Have a site under contract when a round opens.'}
+]}];
+
+WS.forEach(w=>w.items.forEach((it,i)=>it.id=w.id+'.'+i));
+const ALL=WS.flatMap(w=>w.items);
+const KEY='forestheights:checklist:v1';
+let state={}, filter='all', openNotes={};
+
+function load(){
+  try{ const raw=localStorage.getItem(KEY); state=raw?JSON.parse(raw):{}; }
+  catch(e){ state={}; }
+  render();
+}
+let tm=null;
+function save(){
+  clearTimeout(tm);
+  tm=setTimeout(()=>{
+    const t=document.getElementById('savetag');
+    try{ localStorage.setItem(KEY,JSON.stringify(state));
+      t.textContent='Saved'; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1300);
+    }catch(e){ t.textContent='Not saved \u2014 storage blocked'; t.classList.add('on'); }
+  },350);
+}
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isDone=id=>!!(state[id]&&state[id].done);
+
+function toggle(id){
+  const cur=state[id]||{};
+  state[id]= cur.done ? Object.assign({},cur,{done:false,at:null})
+                      : Object.assign({},cur,{done:true,at:new Date().toISOString().slice(0,10)});
+  save(); render();
+}
+function setNote(id,v){ state[id]=Object.assign({},state[id]||{},{note:v}); save(); }
+function toggleNote(id){ openNotes[id]=!openNotes[id]; render(); }
+function setFilter(f){
+  filter=f;
+  ['all','1','2','3','open'].forEach(k=>
+    document.getElementById('f-'+k).setAttribute('aria-pressed',k===f));
+  render();
+}
+function visible(it){
+  if(filter==='all') return true;
+  if(filter==='open') return !isDone(it.id);
+  return String(it.t)===filter;
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='forestheights-checklist-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+function importData(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(typeof d!=='object'||Array.isArray(d)) throw 0;
+      Object.keys(d).forEach(k=>{
+        const mine=state[k]||{}, theirs=d[k]||{};
+        state[k]={done:mine.done||theirs.done,
+                  at:mine.at||theirs.at||null,
+                  note:[mine.note,theirs.note].filter(Boolean).join(mine.note&&theirs.note?' / ':'')||''};
+      });
+      save(); render(); alert('Merged. Completed items and notes from both files are kept.');
+    }catch(e){ alert('That file could not be read. Use a file exported from this checklist.'); }
+    input.value='';
+  };
+  r.readAsText(f);
+}
+
+function render(){
+  const rail=document.getElementById('rail'), key=document.getElementById('railkey');
+  rail.innerHTML=''; key.innerHTML='';
+  WS.forEach(w=>{
+    const done=w.items.filter(i=>isDone(i.id)).length;
+    const seg=document.createElement('div');
+    seg.style.flex=w.items.length; seg.style.background='var(--paper-2)';
+    seg.style.position='relative'; seg.style.overflow='hidden';
+    seg.innerHTML=`<div style="height:100%;width:${w.items.length?done/w.items.length*100:0}%;background:var(--olive)"></div>`;
+    rail.appendChild(seg);
+    key.insertAdjacentHTML('beforeend',`<span><b>${esc(w.name)}</b> ${done}/${w.items.length}</span>`);
+  });
+
+  document.getElementById('body').innerHTML = WS.map(w=>{
+    const items=w.items.filter(visible);
+    if(!items.length) return '';
+    const done=w.items.filter(i=>isDone(i.id)).length;
+    return `<section class="ws">
+      <div class="wshead"><h2>${esc(w.name)}</h2>
+        <span class="wscount">${done} of ${w.items.length}</span></div>
+      <p class="wsnote">${esc(w.note)}</p>
+      ${items.map(it=>{
+        const d=isDone(it.id), st=state[it.id]||{};
+        return `<div class="item${d?' done':''}">
+          <button class="box" aria-pressed="${d}" aria-label="Mark done" onclick="toggle('${it.id}')"></button>
+          <div class="itxt">
+            <div class="ttl">${esc(it.ttl)}</div>
+            ${it.why?`<div class="why">${esc(it.why)}</div>`:''}
+            ${d&&st.at?`<div class="stampdate">Done ${esc(st.at)}</div>`:''}
+            ${st.note&&!openNotes[it.id]?`<div class="why" style="margin-top:5px"><em>${esc(st.note)}</em></div>`:''}
+            ${openNotes[it.id]
+              ? `<textarea class="noteline" rows="2" placeholder="Who you called, what they said, what to do next"
+                   oninput="setNote('${it.id}',this.value)">${esc(st.note)}</textarea>`
+              : `<button class="notebtn" onclick="toggleNote('${it.id}')">${st.note?'Edit note':'+ Note'}</button>`}
+          </div>
+          <span class="tier t${it.t}">T${it.t}</span>
+        </div>`;
+      }).join('')}
+    </section>`;
+  }).join('') || `<p class="wsnote">Nothing matches this filter.</p>`;
+
+  const t1=ALL.filter(i=>i.t===1), t1d=t1.filter(i=>isDone(i.id)).length;
+  const alld=ALL.filter(i=>isDone(i.id)).length;
+  document.getElementById('t1Big').textContent=t1d+'/'+t1.length;
+  document.getElementById('allBig').textContent=alld+'/'+ALL.length;
+  document.getElementById('pctBig').textContent=Math.round(alld/ALL.length*100)+'%';
+}
+load();
+</script>
