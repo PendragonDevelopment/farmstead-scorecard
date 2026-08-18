@@ -1,4 +1,4 @@
-# Farmstead Field Card
+# Ferncliff Farms Field Card
 
 A parcel screening tool for evaluating candidate farmsteads in upstate New York —
 scoring land cost, regulatory posture, roadside cafe viability, and buildout potential
@@ -7,7 +7,7 @@ on a consistent basis so properties can be compared against each other rather th
 ## Live tools
 
 - Landing (both tools): https://farmstead-scorecard.pages.dev/
-- Farmstead Field Card (parcel scoring): https://farmstead-scorecard.pages.dev/scorecard
+- Ferncliff Farms Field Card (parcel scoring): https://farmstead-scorecard.pages.dev/scorecard
 - Readiness Checklist (prep tracker): https://farmstead-scorecard.pages.dev/checklist
 
 Both tools sync behind the same shared passphrase (enter it once per device); signing into
