@@ -4,11 +4,14 @@ A parcel screening tool for evaluating candidate farmsteads in upstate New York 
 scoring land cost, regulatory posture, roadside cafe viability, and buildout potential
 on a consistent basis so properties can be compared against each other rather than by feel.
 
-## Live tool
+## Live tools
 
-https://farmstead-scorecard.pages.dev/
+- Landing (both tools): https://farmstead-scorecard.pages.dev/
+- Farmstead Field Card (parcel scoring): https://farmstead-scorecard.pages.dev/scorecard
+- Readiness Checklist (prep tracker): https://farmstead-scorecard.pages.dev/checklist
 
-Enter the shared passphrase once per device to sync with the property database.
+Enter the shared passphrase once per device to sync the field card with the property database.
+The checklist stores its data locally in the browser.
 
 ## How it works
 

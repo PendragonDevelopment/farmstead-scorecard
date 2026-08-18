@@ -1,0 +1,718 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farmstead Field Card</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#F0EDE3;
+  --paper-2:#E5E1D3;
+  --ink:#22261F;
+  --ink-soft:#5C6152;
+  --rule:#B4AF9B;
+  --ochre:#B57B2E;
+  --olive:#5E6B3A;
+  --oxide:#9C3A28;
+  --pond:#2E5F6B;
+  --disp:'Zilla Slab',Georgia,serif;
+  --body:'Karla',system-ui,sans-serif;
+  --data:'Space Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--paper-2) 1px,transparent 1px);
+  background-size:100% 28px;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px 80px}
+
+/* ---------- masthead ---------- */
+header.mast{border-bottom:2.5px solid var(--ink);margin-bottom:22px;padding:26px 0 14px}
+.mast-row{display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(30px,5.5vw,46px);
+   letter-spacing:-.02em;margin:0;line-height:.98}
+.sub{font-family:var(--data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+     color:var(--ink-soft);margin-top:8px}
+.suite-link{display:inline-block;margin-top:10px;font-family:var(--data);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ochre);text-decoration:none;
+  border-bottom:1.5px solid transparent}
+.suite-link:hover{border-bottom-color:var(--ochre)}
+.stamp-block{margin-left:auto;border:1.5px solid var(--rule);padding:8px 12px;
+  font-family:var(--data);font-size:10px;line-height:1.7;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-soft);transform:rotate(-1.2deg)}
+
+/* ---------- toolbar ---------- */
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+button{font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;
+  border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);
+  padding:9px 15px;border-radius:2px;transition:background .12s,color .12s}
+button:hover{background:var(--ink);color:var(--paper)}
+button:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+button.primary{background:var(--ink);color:var(--paper)}
+button.primary:hover{background:var(--olive);border-color:var(--olive)}
+button.ghost{border-color:var(--rule);color:var(--ink-soft);font-weight:500}
+button.ghost:hover{background:var(--rule);color:var(--ink)}
+.btnlike{display:inline-block;font-family:var(--body);font-size:14px;font-weight:500;
+  cursor:pointer;border:1.5px solid var(--rule);color:var(--ink-soft);
+  padding:9px 15px;border-radius:2px;margin-bottom:0;letter-spacing:0;text-transform:none}
+.btnlike:hover{background:var(--rule);color:var(--ink)}
+.tabs{display:flex;gap:0;border-bottom:1.5px solid var(--rule);margin-bottom:22px}
+.tab{border:none;background:none;padding:10px 16px;font-weight:700;font-size:13px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
+  border-bottom:3px solid transparent;border-radius:0}
+.tab:hover{background:none;color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ochre)}
+
+/* ---------- cards ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:16px}
+.card{position:relative;background:var(--paper);border:1.5px solid var(--ink);
+  padding:16px 16px 14px;border-radius:2px;overflow:hidden;
+  box-shadow:3px 3px 0 var(--paper-2);cursor:pointer;text-align:left;width:100%;
+  font-family:var(--body);color:var(--ink)}
+.card:hover{background:var(--paper);box-shadow:3px 3px 0 var(--rule)}
+.card:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+.card h3{font-family:var(--disp);font-size:19px;font-weight:600;margin:0 0 2px;
+  letter-spacing:-.01em;padding-right:52px}
+.card .loc{font-family:var(--data);font-size:11px;color:var(--ink-soft);
+  letter-spacing:.06em;text-transform:uppercase}
+.scorebig{position:absolute;top:12px;right:14px;font-family:var(--data);
+  font-weight:700;font-size:26px;line-height:1}
+.scorebig span{font-size:11px;font-weight:400;color:var(--ink-soft)}
+.meter{height:7px;background:var(--paper-2);border:1px solid var(--rule);margin:12px 0 9px}
+.meter i{display:block;height:100%;background:var(--olive)}
+.cardmeta{font-family:var(--data);font-size:11px;color:var(--ink-soft);
+  display:flex;justify-content:space-between;gap:8px}
+
+/* the signature: assessor's stamp */
+.stamp{position:absolute;top:50%;left:50%;pointer-events:none;
+  transform:translate(-50%,-50%) rotate(-13deg);
+  font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.1em;
+  text-transform:uppercase;padding:7px 16px;border:3.5px double currentColor;
+  border-radius:3px;opacity:.82;white-space:nowrap}
+.stamp.kill{color:var(--oxide)}
+.stamp.short{color:var(--olive)}
+.card.killed{background:repeating-linear-gradient(-45deg,var(--paper),var(--paper) 9px,var(--paper-2) 9px,var(--paper-2) 18px)}
+
+/* ---------- form ---------- */
+.formhead{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:8px}
+.formhead h2{font-family:var(--disp);font-size:27px;margin:0;font-weight:600}
+label{display:block;font-family:var(--data);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+input[type=text],input[type=number],input[type=password],textarea{
+  width:100%;font-family:var(--body);font-size:15px;padding:8px 10px;
+  border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:2px}
+input:focus,textarea:focus{outline:none;border-color:var(--ochre);box-shadow:0 0 0 2px rgba(181,123,46,.22)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:26px}
+
+fieldset{border:none;margin:0 0 26px;padding:0}
+legend{font-family:var(--disp);font-size:17px;font-weight:600;padding:0;margin-bottom:2px}
+.legwrap{border-top:2px solid var(--ink);padding-top:9px;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.wt{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+
+.crit{padding:11px 0;border-bottom:1px solid var(--rule)}
+.crit:last-child{border-bottom:none}
+.crit-q{font-weight:700;font-size:15px;margin-bottom:1px}
+.crit-h{font-size:13px;color:var(--ink-soft);margin-bottom:9px}
+.opts{display:flex;gap:6px;flex-wrap:wrap}
+.opt{flex:1 1 78px;min-width:78px;font-family:var(--data);font-size:11px;font-weight:700;
+  padding:8px 4px;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink-soft);
+  border-radius:2px;text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.opt:hover{background:var(--paper-2);color:var(--ink)}
+.opt[aria-pressed="true"]{background:var(--olive);border-color:var(--olive);color:var(--paper)}
+
+.gate{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--rule)}
+.gate:last-of-type{border-bottom:none}
+.gate-txt{flex:1}
+.gatebtns{display:flex;gap:6px;flex-shrink:0}
+.gb{font-family:var(--data);font-size:11px;font-weight:700;padding:7px 13px;
+  border:1.5px solid var(--rule);background:var(--paper);color:var(--ink-soft);border-radius:2px}
+.gb[aria-pressed="true"].yes{background:var(--pond);border-color:var(--pond);color:var(--paper)}
+.gb[aria-pressed="true"].no{background:var(--oxide);border-color:var(--oxide);color:var(--paper)}
+
+.summary{position:sticky;bottom:0;background:var(--paper);border-top:2.5px solid var(--ink);
+  padding:12px 0;display:flex;gap:18px;align-items:center;flex-wrap:wrap;z-index:5;
+  box-shadow:0 -10px 18px -12px rgba(34,38,31,.4)}
+.summary .big{font-family:var(--data);font-weight:700;font-size:31px;line-height:1}
+.summary .lab{font-family:var(--data);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-soft)}
+.verdict{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.08em;
+  text-transform:uppercase;padding:5px 12px;border:2.5px double currentColor;border-radius:2px}
+
+/* ---------- compare ---------- */
+.tablewrap{overflow-x:auto;border:1.5px solid var(--ink);background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+thead th{background:var(--ink);color:var(--paper);font-family:var(--data);font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;font-weight:400}
+tbody tr:last-child td{border-bottom:none}
+td.num{font-family:var(--data);font-weight:700}
+tr.dq td{color:var(--ink-soft);background:var(--paper-2)}
+.pill{font-family:var(--data);font-size:10px;font-weight:700;padding:2px 7px;
+  border:1.5px solid currentColor;border-radius:2px;letter-spacing:.06em}
+.pill.kill{color:var(--oxide)} .pill.short{color:var(--olive)} .pill.mid{color:var(--ochre)}
+
+.empty{border:2px dashed var(--rule);padding:46px 24px;text-align:center;border-radius:2px}
+.empty p{max-width:44ch;margin:0 auto 18px;color:var(--ink-soft)}
+.note{font-size:13px;color:var(--ink-soft);border-left:3px solid var(--ochre);
+  padding:2px 0 2px 12px;margin:16px 0}
+.savetag{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);opacity:0;transition:opacity .25s}
+.savetag.on{opacity:1}
+
+/* ---------- sync status ---------- */
+.synctag{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.synctag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule);flex:none}
+.synctag.ok::before{background:var(--olive)}
+.synctag.busy::before{background:var(--ochre)}
+.synctag.off::before{background:var(--oxide)}
+.synctag.locked::before{background:var(--pond)}
+
+/* ---------- passphrase gate ---------- */
+.lock{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(34,38,31,.55)}
+.lock[hidden]{display:none}
+.lock-card{background:var(--paper);border:2.5px solid var(--ink);border-radius:3px;
+  box-shadow:6px 6px 0 var(--paper-2);max-width:400px;width:100%;padding:26px 24px}
+.lock-card h2{font-family:var(--disp);font-size:24px;margin:0 0 4px;font-weight:700}
+.lock-card p{color:var(--ink-soft);font-size:14px;margin:0 0 4px}
+.lock-row{display:flex;gap:8px;margin-top:14px}
+.lock-row input{flex:1}
+.lock-err{color:var(--oxide);font-family:var(--data);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;margin-top:10px;min-height:14px}
+.lock-skip{margin-top:16px;text-align:center}
+.lock-skip button{background:none;border:none;color:var(--ink-soft);font-weight:500;
+  font-size:12px;text-decoration:underline;padding:4px}
+.lock-skip button:hover{background:none;color:var(--ink)}
+
+@media (max-width:600px){
+  .stamp-block{display:none}
+  .summary{gap:12px}
+  .summary .big{font-size:26px}
+  .synctag{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+<header class="mast">
+  <div class="mast-row">
+    <div>
+      <h1>Farmstead Field Card</h1>
+      <div class="sub">Parcel screening · Upstate NY · Farm + cafe, cabins later</div>
+      <a class="suite-link" href="/checklist">↗ Readiness Checklist — prep tracker</a>
+    </div>
+    <div class="stamp-block">
+      Weighting<br>Cost 30 · Regulatory 27<br>Traffic 25 · Land 18<br>
+      <span style="color:var(--olive)">Syncs to shared database</span>
+    </div>
+  </div>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" id="t-list" aria-selected="true" onclick="show('list')">Properties</button>
+  <button class="tab" role="tab" id="t-compare" aria-selected="false" onclick="show('compare')">Compare</button>
+</div>
+
+<section id="v-list"></section>
+<section id="v-form" hidden></section>
+<section id="v-compare" hidden></section>
+</div>
+
+<div id="lock" class="lock" hidden></div>
+
+<script>
+const GATES=[
+ {id:'access',q:'Legal access on a maintained public road',
+  h:'A right-of-way over a neighbour’s land will not support commercial traffic, and lenders treat it as a title defect.'},
+ {id:'zoning',q:'Lodging achievable without a full rezoning',
+  h:'Permitted use or special-use permit is fine. If cabins or a campground require rezoning the parcel, walk away.'},
+ {id:'waste',q:'Wastewater feasible for commercial flows',
+  h:'Cafe plus cabins needs far more than a house system. Confirm soils will carry it before you offer.'}
+];
+
+const SECTIONS=[
+ {id:'cost',name:'Cost & structures',weight:30,items:[
+  {id:'price',q:'Asking price against your ceiling',h:'Everything above roughly $700k starts eating the cafe budget.',
+   opts:['Way over','Over','At ceiling','Under','Well under']},
+  {id:'peracre',q:'Price per acre vs county median',h:'Check recent comparable sales, not the listing narrative.',
+   opts:['Way over','Over','At median','Under','Well under']},
+  {id:'seller',q:'Seller open to holding paper',h:'Seller financing is the strongest lever you have. Ask early, ask directly.',
+   opts:['Refused','Unlikely','Unknown','Open to it','Offered']},
+  {id:'house',q:'Farmhouse liveable as-is',h:'You live here. A gut renovation is a second project running alongside the first.',
+   opts:['Uninhabitable','Major work','Dated but sound','Move-in','Recently updated']},
+  {id:'barn',q:'Barn convertible to a licensed kitchen and dining room',
+   h:'Structure, ceiling height, floor, and vehicle access. A barn needing structural rebuild costs the same as new construction.',
+   opts:['None suitable','Rebuild needed','Heavy work','Good bones','Nearly ready']}
+ ]},
+ {id:'reg',name:'Regulatory',weight:27,items:[
+  {id:'agdist',q:'Inside a certified agricultural district',
+   h:'This is what activates §305-a protection for the farm and the cafe. You can petition to join during the county review window.',
+   opts:['No, and unlikely','No','Adjacent','Yes','Yes, long-standing']},
+  {id:'lodgezone',q:'How the town treats cabins',h:'Read the actual use table. Ask the code officer before you offer.',
+   opts:['Prohibited','Hostile','Silent','Special permit','Permitted use']},
+  {id:'track',q:'Town’s track record with agritourism',
+   h:'Existing farm stands, u-picks, or wedding venues nearby mean the board has done this before.',
+   opts:['Active opposition','Wary','No precedent','Some precedent','Several thriving']},
+  {id:'constraint',q:'Wetlands, floodplain, steep slope burden',
+   h:'Check DEC wetland mapper and FEMA panels before touring. Constraints on the buildable third are what matter.',
+   opts:['Severe','Significant','Moderate','Minor','Clean']},
+  {id:'water',q:'Potable water outlook',
+   h:'At scale you become a public water system. Existing well yield and records shorten that path considerably.',
+   opts:['No source','Poor yield','Unknown','Good well','Tested high yield']}
+ ]},
+ {id:'traffic',name:'Cafe viability',weight:25,items:[
+  {id:'aadt',q:'Annual average daily traffic on the frontage road',
+   h:'Pull the segment count from NYSDOT before visiting. Under 2,000 is a hard sell for a roadside cafe.',
+   opts:['Under 1k','1k–2k','2k–4k','4k–8k','Over 8k']},
+  {id:'sight',q:'Sight lines and safe turn-in',
+   h:'Stand at the driveway. Can a car slow and turn safely from both directions? Crest and curve frontage kills cafes.',
+   opts:['Dangerous','Poor','Adequate','Good','Excellent']},
+  {id:'draw',q:'Existing tourist draw within 15 minutes',
+   h:'Ski area, state park, brewery trail, historic site. You want to intercept traffic that already exists.',
+   opts:['None','Weak','One draw','Several','Established corridor']},
+  {id:'exit',q:'Distance to an interstate exit or major route',
+   h:'Weekend flow from Albany, the Thruway, and Vermont.',
+   opts:['Over 30 min','20–30 min','10–20 min','5–10 min','Under 5 min']},
+  {id:'transit',q:'Distance to Albany airport or an Amtrak station',
+   h:'Matters for the cabin phase and for out-of-region guests.',
+   opts:['Over 90 min','60–90 min','45–60 min','30–45 min','Under 30 min']}
+ ]},
+ {id:'land',name:'Land & buildout',weight:18,items:[
+  {id:'pasture',q:'Open pasture for alpacas, goats and ducks',
+   h:'Clearing woods is slow and expensive. You want existing open ground.',
+   opts:['None open','Under 10 ac','10–20 ac','20–40 ac','Over 40 ac']},
+  {id:'orchard',q:'Slope and aspect for orchard and solar',
+   h:'South to southeast facing, gentle slope, good air drainage for frost.',
+   opts:['Poor','Marginal','Workable','Good','Ideal']},
+  {id:'cabins',q:'Cabin siting potential',
+   h:'Screened pockets with privacy and an outlook, reachable by a short drive. Walk the back of the parcel.',
+   opts:['None','Cramped','Some','Good options','Excellent']},
+  {id:'power',q:'Power at the road and broadband',
+   h:'A long service extension is real money. Check provider maps for fibre or cable.',
+   opts:['Neither','Power only, far','Power at road','Power + cable','Power + fibre']},
+  {id:'soil',q:'Soil quality for permaculture and market gardens',
+   h:'Pull the NRCS Web Soil Survey for the parcel. Prime farmland soils are worth paying for.',
+   opts:['Poor','Marginal','Mixed','Good','Prime']}
+ ]}
+];
+
+const KEY='farmscout:properties:v1';
+const AUTH_FLAG='fscard:authed';
+let props=[], currentId=null, view='list';
+let syncState={cls:'',text:''};
+
+/* ---------- normalisation ---------- */
+function normalize(p){
+  if(!p||typeof p!=='object') return null;
+  return {
+    id: p.id!=null ? String(p.id) : String(Date.now()),
+    name: p.name||'', town: p.town||'', acres: p.acres||'', price: p.price||'', notes: p.notes||'',
+    gates: (p.gates&&typeof p.gates==='object')?p.gates:{},
+    scores: (p.scores&&typeof p.scores==='object')?p.scores:{},
+    updated_at: Number(p.updated_at)||0,
+    deleted_at: p.deleted_at?Number(p.deleted_at):null
+  };
+}
+const now=()=>Date.now();
+const activeProps=()=>props.filter(p=>!p.deleted_at);
+const byId=id=>props.find(p=>p.id===String(id));
+
+/* ---------- local storage ---------- */
+function load(){
+  let raw=[];
+  try{ const s=localStorage.getItem(KEY); raw=s?JSON.parse(s):[]; }catch(e){ raw=[]; }
+  if(!Array.isArray(raw)) raw=[];
+  props=raw.map(normalize).filter(Boolean);
+  // Migrate legacy rows that never had a timestamp so they upload on first sync.
+  let migrated=false;
+  for(const p of props){ if(!p.updated_at){ p.updated_at=now(); migrated=true; } }
+  if(migrated) saveLocal();
+  render();
+  initSync();
+}
+function saveLocal(){
+  try{ localStorage.setItem(KEY,JSON.stringify(props)); return true; }
+  catch(e){ return false; }
+}
+let saveTimer=null;
+function queueSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    const ok=saveLocal();
+    const t=document.getElementById('savetag');
+    if(t){
+      t.textContent= ok?'Saved':'Not saved — storage blocked';
+      t.classList.add('on');
+      if(ok) setTimeout(()=>t.classList.remove('on'),1400);
+    }
+    queueSync();
+  },400);
+}
+
+/* ---------- scoring ---------- */
+function scoreOf(p){
+  let total=0;
+  for(const s of SECTIONS){
+    let got=0,max=0;
+    for(const it of s.items){
+      max+=4;
+      const v=p.scores&&p.scores[s.id+'.'+it.id];
+      if(typeof v==='number') got+=v;
+    }
+    total += max? (got/max)*s.weight : 0;
+  }
+  return Math.round(total);
+}
+function answered(p){
+  let n=0,t=0;
+  for(const s of SECTIONS) for(const it of s.items){
+    t++; if(typeof (p.scores||{})[s.id+'.'+it.id]==='number') n++;
+  }
+  return {n,t};
+}
+function killed(p){ return GATES.some(g=>(p.gates||{})[g.id]===false); }
+function verdict(p){
+  if(killed(p)) return {label:'Deal breaker',cls:'kill'};
+  const s=scoreOf(p);
+  if(s>=70) return {label:'Shortlist',cls:'short'};
+  if(s>=50) return {label:'Worth a look',cls:'mid'};
+  return {label:'Pass',cls:'kill'};
+}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- views ---------- */
+function show(v){
+  view=v;
+  document.getElementById('t-list').setAttribute('aria-selected',v==='list');
+  document.getElementById('t-compare').setAttribute('aria-selected',v==='compare');
+  render();
+}
+function render(){
+  for(const id of ['list','form','compare']) document.getElementById('v-'+id).hidden=true;
+  if(view==='form'){ document.getElementById('v-form').hidden=false; renderForm(); }
+  else if(view==='compare'){ document.getElementById('v-compare').hidden=false; renderCompare(); }
+  else { document.getElementById('v-list').hidden=false; renderList(); }
+  paintSync();
+}
+
+function syncTagHTML(){ return `<span id="synctag" class="synctag ${syncState.cls}">${esc(syncState.text)}</span>`; }
+
+function renderList(){
+  const el=document.getElementById('v-list');
+  const list=activeProps();
+  if(!list.length){
+    el.innerHTML=`<div class="bar">${syncTagHTML()}</div><div class="empty">
+      <p>No properties yet. Add the first farm you tour, then score it in the driveway while it is still fresh.</p>
+      <button class="primary" onclick="addProp()">Add a property</button>
+      <label class="ghost btnlike" for="impf0">Import a saved file</label>
+      <input id="impf0" type="file" accept="application/json" hidden onchange="importData(this)">
+      </div>`;
+    return;
+  }
+  el.innerHTML=`<div class="bar">
+      <button class="primary" onclick="addProp()">Add a property</button>
+      <button class="ghost" onclick="exportData()">Export</button>
+      <label class="ghost btnlike" for="impf">Import</label>
+      <input id="impf" type="file" accept="application/json" hidden onchange="importData(this)">
+      <span id="savetag" class="savetag">Saved</span>
+      ${syncTagHTML()}</div>
+    <div class="grid">${list.map(p=>{
+      const s=scoreOf(p),v=verdict(p),a=answered(p),k=killed(p);
+      return `<button class="card${k?' killed':''}" onclick="openProp('${p.id}')">
+        ${k?'<span class="stamp kill">Deal breaker</span>':(s>=70?'<span class="stamp short">Shortlist</span>':'')}
+        <div class="scorebig">${s}<span>/100</span></div>
+        <h3>${esc(p.name||'Untitled')}</h3>
+        <div class="loc">${esc(p.town||'—')}${p.acres?' · '+esc(p.acres)+' ac':''}</div>
+        <div class="meter"><i style="width:${s}%"></i></div>
+        <div class="cardmeta"><span>${p.price?'$'+Number(p.price).toLocaleString():'No price'}</span>
+        <span>${a.n}/${a.t} scored</span></div></button>`;
+    }).join('')}</div>`;
+}
+
+function addProp(){
+  const p=normalize({id:String(now()),updated_at:now()});
+  props.push(p);
+  currentId=p.id; queueSave(); view='form'; render();
+  setTimeout(()=>{const f=document.querySelector('#v-form input');if(f)f.focus();},60);
+}
+function openProp(id){ currentId=String(id); view='form'; render(); window.scrollTo(0,0); }
+function backToList(){ currentId=null; view='list'; render(); }
+function delProp(){
+  const p=byId(currentId); if(!p) return;
+  p.deleted_at=now(); p.updated_at=now();
+  currentId=null; queueSave(); view='list'; render();
+}
+function touch(p){ p.updated_at=now(); }
+function setField(k,v){
+  const p=byId(currentId); if(!p) return;
+  p[k]=v; touch(p); queueSave();
+  if(k==='name'||k==='town'){ const h=document.getElementById('fh'); if(h) h.textContent=p.name||'Untitled'; }
+}
+function setGate(gid,val){
+  const p=byId(currentId); if(!p) return;
+  p.gates[gid] = p.gates[gid]===val ? null : val;
+  touch(p); queueSave(); renderForm();
+}
+function setScore(key,val){
+  const p=byId(currentId); if(!p) return;
+  p.scores[key] = p.scores[key]===val ? null : val;
+  touch(p); queueSave(); renderForm();
+}
+
+function renderForm(){
+  const p=byId(currentId); if(!p){ backToList(); return; }
+  const s=scoreOf(p),v=verdict(p),a=answered(p);
+  const el=document.getElementById('v-form');
+  el.innerHTML=`
+   <div class="bar">
+     <button class="ghost" onclick="backToList()">← All properties</button>
+     <span id="savetag" class="savetag">Saved</span>
+     ${syncTagHTML()}
+     <button class="ghost" style="margin-left:auto" onclick="if(confirm('Delete this property? This cannot be undone.'))delProp()">Delete</button>
+   </div>
+   <div class="formhead"><h2 id="fh">${esc(p.name||'Untitled')}</h2></div>
+   <div class="fields">
+     <div><label for="f-name">Property name</label>
+       <input id="f-name" type="text" value="${esc(p.name)}" placeholder="Old Batten Road farm"
+        oninput="setField('name',this.value)"></div>
+     <div><label for="f-town">Town & county</label>
+       <input id="f-town" type="text" value="${esc(p.town)}" placeholder="Cambridge, Washington Co."
+        oninput="setField('town',this.value)"></div>
+     <div><label for="f-acres">Acres</label>
+       <input id="f-acres" type="number" value="${esc(p.acres)}" placeholder="80"
+        oninput="setField('acres',this.value)"></div>
+     <div><label for="f-price">Asking price</label>
+       <input id="f-price" type="number" value="${esc(p.price)}" placeholder="625000"
+        oninput="setField('price',this.value)"></div>
+   </div>
+
+   <fieldset>
+     <div class="legwrap"><legend>Deal breakers</legend>
+       <span class="wt">Any “no” disqualifies the parcel</span></div>
+     ${GATES.map(g=>{
+       const val=(p.gates||{})[g.id];
+       return `<div class="gate"><div class="gate-txt">
+         <div class="crit-q">${g.q}</div><div class="crit-h">${g.h}</div></div>
+         <div class="gatebtns">
+           <button class="gb yes" aria-pressed="${val===true}" onclick="setGate('${g.id}',true)">Yes</button>
+           <button class="gb no" aria-pressed="${val===false}" onclick="setGate('${g.id}',false)">No</button>
+         </div></div>`;
+     }).join('')}
+   </fieldset>
+
+   ${SECTIONS.map(sec=>`
+     <fieldset>
+       <div class="legwrap"><legend>${sec.name}</legend><span class="wt">${sec.weight} points</span></div>
+       ${sec.items.map(it=>{
+         const key=sec.id+'.'+it.id, cur=(p.scores||{})[key];
+         return `<div class="crit">
+           <div class="crit-q">${it.q}</div><div class="crit-h">${it.h}</div>
+           <div class="opts">${it.opts.map((o,i)=>
+             `<button class="opt" aria-pressed="${cur===i}" onclick="setScore('${key}',${i})">${o}</button>`
+           ).join('')}</div></div>`;
+       }).join('')}
+     </fieldset>`).join('')}
+
+   <fieldset>
+     <div class="legwrap"><legend>Field notes</legend><span class="wt">Write it before you drive off</span></div>
+     <textarea rows="5" placeholder="Who you spoke to, what the code officer said, what the barn floor looked like, what you smelled."
+       oninput="setField('notes',this.value)">${esc(p.notes)}</textarea>
+   </fieldset>
+
+   <div class="summary">
+     <div><div class="big">${s}<span style="font-size:14px;color:var(--ink-soft)">/100</span></div>
+       <div class="lab">Weighted score</div></div>
+     <div><div class="big">${a.n}/${a.t}</div><div class="lab">Scored</div></div>
+     <div class="verdict" style="color:var(--${v.cls==='kill'?'oxide':v.cls==='short'?'olive':'ochre'})">${v.label}</div>
+   </div>`;
+}
+
+function renderCompare(){
+  const el=document.getElementById('v-compare');
+  const list=activeProps();
+  if(!list.length){ el.innerHTML=`<div class="bar">${syncTagHTML()}</div><div class="empty"><p>Nothing to compare yet.</p></div>`; return; }
+  const rows=list.map(p=>({p,s:scoreOf(p),k:killed(p),v:verdict(p)}))
+    .sort((a,b)=> (a.k-b.k) || (b.s-a.s));
+  el.innerHTML=`<div class="bar">${syncTagHTML()}</div>
+   <div class="note">Sorted best first, with disqualified parcels pushed to the bottom.
+     A high score on a parcel that fails a deal breaker is still a no.</div>
+   <div class="tablewrap"><table>
+    <thead><tr><th>Property</th><th>Town</th><th>Price</th><th>Acres</th><th>$/acre</th>
+      ${SECTIONS.map(s=>`<th>${s.name}</th>`).join('')}<th>Score</th><th>Verdict</th></tr></thead>
+    <tbody>${rows.map(r=>{
+      const p=r.p, pa=(p.price&&p.acres)?Math.round(p.price/p.acres):null;
+      return `<tr class="${r.k?'dq':''}">
+        <td><a href="#" onclick="openProp('${p.id}');return false" style="color:inherit">${esc(p.name||'Untitled')}</a></td>
+        <td>${esc(p.town||'—')}</td>
+        <td class="num">${p.price?'$'+Number(p.price).toLocaleString():'—'}</td>
+        <td class="num">${esc(p.acres||'—')}</td>
+        <td class="num">${pa?'$'+pa.toLocaleString():'—'}</td>
+        ${SECTIONS.map(s=>{
+          let got=0,max=0,any=false;
+          s.items.forEach(it=>{max+=4;const v=(p.scores||{})[s.id+'.'+it.id];
+            if(typeof v==='number'){got+=v;any=true;}});
+          return `<td class="num">${any?Math.round((got/max)*s.weight)+'/'+s.weight:'—'}</td>`;
+        }).join('')}
+        <td class="num">${r.s}</td>
+        <td><span class="pill ${r.v.cls}">${r.v.label}</span></td></tr>`;
+    }).join('')}</tbody></table></div>`;
+}
+
+/* ---------- transfer between devices (file) ---------- */
+function exportData(){
+  const blob=new Blob([JSON.stringify(activeProps(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='farmstead-properties-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+function importData(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(!Array.isArray(data)) throw new Error('bad shape');
+      let added=0,merged=0;
+      data.forEach(d=>{
+        const n=normalize(d); if(!n) return;
+        if(!n.updated_at) n.updated_at=now();
+        const existing=byId(n.id);
+        if(existing){ Object.assign(existing,n); merged++; }
+        else { props.push(n); added++; }
+      });
+      queueSave(); render();
+      alert('Imported '+added+' new, updated '+merged+'.');
+    }catch(e){ alert('That file could not be read. Use a file exported from this tool.'); }
+    input.value='';
+  };
+  r.readAsText(f);
+}
+
+/* ---------- sync with the shared database ---------- */
+function setSync(cls,text){ syncState={cls,text}; paintSync(); }
+function paintSync(){
+  const el=document.getElementById('synctag');
+  if(el){ el.className='synctag '+syncState.cls; el.textContent=syncState.text; }
+}
+function api(path,opts){
+  return fetch(path,Object.assign({headers:{'Content-Type':'application/json'},credentials:'same-origin'},opts||{}));
+}
+function mergeServer(list){
+  let changed=false;
+  for(const raw of list){
+    const s=normalize(raw); if(!s) continue;
+    const local=byId(s.id);
+    if(!local){ props.push(s); changed=true; }
+    else if(s.updated_at>local.updated_at){ Object.assign(local,s); changed=true; }
+  }
+  return changed;
+}
+let syncTimer=null, syncing=false, pendingSync=false;
+function queueSync(){
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(()=>{ syncNow(); },900);
+}
+async function syncNow(){
+  if(localStorage.getItem(AUTH_FLAG)!=='1'){ setSync('locked','Sign in to sync'); return; }
+  if(!navigator.onLine){ setSync('off','Offline — saved locally'); return; }
+  if(syncing){ pendingSync=true; return; }
+  syncing=true; setSync('busy','Syncing…');
+  try{
+    // Pull first, merge, then push the full local set (server keeps newest per id).
+    const g=await api('/api/properties');
+    if(g.status===401){ localStorage.removeItem(AUTH_FLAG); setSync('locked','Sign in to sync'); showLock(); return; }
+    if(!g.ok) throw new Error('pull '+g.status);
+    const data=await g.json();
+    const changed=mergeServer(data.properties||[]);
+    if(changed){ saveLocal(); render(); }
+
+    const post=await api('/api/properties',{method:'POST',body:JSON.stringify({properties:props})});
+    if(post.status===401){ localStorage.removeItem(AUTH_FLAG); setSync('locked','Sign in to sync'); showLock(); return; }
+    if(!post.ok) throw new Error('push '+post.status);
+
+    setSync('ok','Synced');
+  }catch(e){
+    setSync('off','Sync failed — saved locally');
+  }finally{
+    syncing=false;
+    if(pendingSync){ pendingSync=false; queueSync(); }
+  }
+}
+
+/* ---------- passphrase gate ---------- */
+function showLock(){
+  const el=document.getElementById('lock');
+  el.hidden=false;
+  el.innerHTML=`<div class="lock-card">
+     <h2>Field card access</h2>
+     <p>Enter the shared passphrase to sync with the property database.</p>
+     <form onsubmit="return submitPass(event)">
+       <label for="pp" style="margin-top:12px">Passphrase</label>
+       <div class="lock-row">
+         <input id="pp" type="password" autocomplete="current-password">
+         <button class="primary" type="submit">Enter</button>
+       </div>
+       <div class="lock-err" id="pperr"></div>
+     </form>
+     <div class="lock-skip"><button type="button" onclick="dismissLock()">Work offline on this device</button></div>
+   </div>`;
+  setTimeout(()=>{const i=document.getElementById('pp'); if(i) i.focus();},40);
+}
+function hideLock(){ const el=document.getElementById('lock'); el.hidden=true; el.innerHTML=''; }
+function dismissLock(){ hideLock(); setSync('locked','Sign in to sync'); }
+async function submitPass(e){
+  e.preventDefault();
+  const input=document.getElementById('pp'), err=document.getElementById('pperr');
+  const pass=input.value;
+  err.textContent='';
+  try{
+    const res=await api('/api/login',{method:'POST',body:JSON.stringify({passphrase:pass})});
+    if(res.ok){
+      localStorage.setItem(AUTH_FLAG,'1');
+      hideLock();
+      syncNow();
+    } else if(res.status===401){
+      err.textContent='That passphrase did not match.';
+      input.select();
+    } else {
+      err.textContent='Sign-in unavailable right now.';
+    }
+  }catch(ex){
+    err.textContent='Could not reach the server.';
+  }
+  return false;
+}
+
+/* ---------- boot ---------- */
+async function initSync(){
+  // If this device has signed in before, go straight to background sync.
+  if(localStorage.getItem(AUTH_FLAG)==='1'){ syncNow(); return; }
+  // Otherwise ask, but only if the server is reachable; offline we stay local.
+  try{
+    const res=await api('/api/session');
+    if(res.ok){
+      const d=await res.json();
+      if(d.authed){ localStorage.setItem(AUTH_FLAG,'1'); syncNow(); }
+      else { setSync('locked','Sign in to sync'); showLock(); }
+    } else {
+      setSync('off','Offline — saved locally');
+    }
+  }catch(e){
+    setSync('off','Offline — saved locally');
+  }
+}
+
+window.addEventListener('online',()=>{ if(localStorage.getItem(AUTH_FLAG)==='1') syncNow(); });
+window.addEventListener('offline',()=>setSync('off','Offline — saved locally'));
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && localStorage.getItem(AUTH_FLAG)==='1') syncNow(); });
+
+load();
+</script>
