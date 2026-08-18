@@ -10,8 +10,8 @@ on a consistent basis so properties can be compared against each other rather th
 - Farmstead Field Card (parcel scoring): https://farmstead-scorecard.pages.dev/scorecard
 - Readiness Checklist (prep tracker): https://farmstead-scorecard.pages.dev/checklist
 
-Enter the shared passphrase once per device to sync the field card with the property database.
-The checklist stores its data locally in the browser.
+Both tools sync behind the same shared passphrase (enter it once per device); signing into
+either authorizes the other. Both are offline-first and store a local cache in the browser.
 
 ## How it works
 
@@ -57,7 +57,7 @@ Two things worth pulling in advance, since they score better from a desk than a 
 Everything runs on Cloudflare, deployed from this repo:
 
 - **Frontend** — `public/index.html`, a single self-contained file (no build step).
-- **API** — Cloudflare Pages Functions under `functions/api/` (`login`, `session`, `logout`, `properties`).
+- **API** — Cloudflare Pages Functions under `functions/api/` (`login`, `session`, `logout`, `properties`, `checklist`).
 - **Database** — Cloudflare D1 (SQLite). Schema in `migrations/`.
 - **Auth** — the passphrase is compared server-side; a signed, HttpOnly cookie authorizes API calls.
   The database credentials never reach the browser. Secrets (`APP_PASSPHRASE`, `AUTH_SECRET`) are

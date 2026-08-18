@@ -85,6 +85,38 @@ section.ws{margin-bottom:34px}
 .foot .lab{font-family:var(--data);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft)}
 .callout{border-left:3px solid var(--oxide);padding:8px 0 8px 13px;margin:0 0 24px;font-size:14px}
 .callout b{font-family:var(--disp);font-size:15px}
+/* sync status */
+.synctag{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.synctag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rule);flex:none}
+.synctag.ok::before{background:var(--olive)}
+.synctag.busy::before{background:var(--ochre)}
+.synctag.off::before{background:var(--oxide)}
+.synctag.locked::before{background:var(--pond)}
+
+/* passphrase gate */
+input[type=password]{width:100%;font-family:var(--body);font-size:15px;padding:8px 10px;
+  border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:2px}
+input[type=password]:focus{outline:none;border-color:var(--ochre);box-shadow:0 0 0 2px rgba(181,123,46,.22)}
+.lock{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(34,38,31,.55)}
+.lock[hidden]{display:none}
+.lock-card{background:var(--paper);border:2.5px solid var(--ink);border-radius:3px;
+  box-shadow:6px 6px 0 var(--paper-2);max-width:400px;width:100%;padding:26px 24px}
+.lock-card h2{font-family:var(--disp);font-size:24px;margin:0 0 4px;font-weight:700}
+.lock-card p{color:var(--ink-soft);font-size:14px;margin:0 0 4px}
+.lock-lab{display:block;font-family:var(--data);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-soft);margin:12px 0 4px}
+.lock-row{display:flex;gap:8px;margin-top:6px}
+.lock-row input{flex:1}
+.lock-row button{background:var(--ink);color:var(--paper)}
+.lock-err{color:var(--oxide);font-family:var(--data);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;margin-top:10px;min-height:14px}
+.lock-skip{margin-top:16px;text-align:center}
+.lock-skip button{background:none;border:none;color:var(--ink-soft);font-weight:500;
+  font-size:12px;text-decoration:underline;padding:4px}
+.lock-skip button:hover{background:none;color:var(--ink)}
+
 @media (max-width:560px){.foot{gap:12px}.foot .big{font-size:21px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -114,6 +146,7 @@ section.ws{margin-bottom:34px}
   <label class="btnlike" for="imp">Import</label>
   <input id="imp" type="file" accept="application/json" hidden onchange="importData(this)">
   <span id="savetag" class="savetag">Saved</span>
+  <span id="synctag" class="synctag"></span>
 </div>
 
 <div id="body"></div>
@@ -124,6 +157,8 @@ section.ws{margin-bottom:34px}
   <div><div class="big" id="allBig">0/0</div><div class="lab">All items</div></div>
 </div>
 </div>
+
+<div id="lock" class="lock" hidden></div>
 
 <script>
 const WS=[
@@ -194,7 +229,16 @@ let state={}, filter='all', openNotes={};
 function load(){
   try{ const raw=localStorage.getItem(KEY); state=raw?JSON.parse(raw):{}; }
   catch(e){ state={}; }
+  if(!state||typeof state!=='object'||Array.isArray(state)) state={};
+  // Stamp legacy entries that predate sync so they upload on first sync.
+  let migrated=false;
+  for(const id of Object.keys(state)){
+    if(state[id]&&typeof state[id]==='object'){ if(!state[id].updated_at){ state[id].updated_at=Date.now(); migrated=true; } }
+    else delete state[id];
+  }
+  if(migrated) saveNow();
   render();
+  initSync();
 }
 let tm=null;
 function save(){
@@ -204,8 +248,10 @@ function save(){
     try{ localStorage.setItem(KEY,JSON.stringify(state));
       t.textContent='Saved'; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1300);
     }catch(e){ t.textContent='Not saved \u2014 storage blocked'; t.classList.add('on'); }
+    queueSync();
   },350);
 }
+function saveNow(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); return true; }catch(e){ return false; } }
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isDone=id=>!!(state[id]&&state[id].done);
 
@@ -213,9 +259,10 @@ function toggle(id){
   const cur=state[id]||{};
   state[id]= cur.done ? Object.assign({},cur,{done:false,at:null})
                       : Object.assign({},cur,{done:true,at:new Date().toISOString().slice(0,10)});
+  state[id].updated_at=Date.now();
   save(); render();
 }
-function setNote(id,v){ state[id]=Object.assign({},state[id]||{},{note:v}); save(); }
+function setNote(id,v){ state[id]=Object.assign({},state[id]||{},{note:v,updated_at:Date.now()}); save(); }
 function toggleNote(id){ openNotes[id]=!openNotes[id]; render(); }
 function setFilter(f){
   filter=f;
@@ -248,7 +295,8 @@ function importData(input){
         const mine=state[k]||{}, theirs=d[k]||{};
         state[k]={done:mine.done||theirs.done,
                   at:mine.at||theirs.at||null,
-                  note:[mine.note,theirs.note].filter(Boolean).join(mine.note&&theirs.note?' / ':'')||''};
+                  note:[mine.note,theirs.note].filter(Boolean).join(mine.note&&theirs.note?' / ':'')||'',
+                  updated_at:Date.now()};
       });
       save(); render(); alert('Merged. Completed items and notes from both files are kept.');
     }catch(e){ alert('That file could not be read. Use a file exported from this checklist.'); }
@@ -304,5 +352,112 @@ function render(){
   document.getElementById('allBig').textContent=alld+'/'+ALL.length;
   document.getElementById('pctBig').textContent=Math.round(alld/ALL.length*100)+'%';
 }
+
+/* ---------- sync with the shared database ---------- */
+const AUTH_FLAG='fscard:authed';   // shared with the scorecard (same cookie/origin)
+let syncState={cls:'',text:''};
+function setSync(cls,text){ syncState={cls,text}; paintSync(); }
+function paintSync(){
+  const el=document.getElementById('synctag');
+  if(el){ el.className='synctag '+syncState.cls; el.textContent=syncState.text; }
+}
+function api(path,opts){
+  return fetch(path,Object.assign({headers:{'Content-Type':'application/json'},credentials:'same-origin'},opts||{}));
+}
+function stateToItems(){
+  return Object.keys(state).map(id=>({
+    id, done:!!state[id].done, at:state[id].at||null,
+    note:state[id].note||'', updated_at:Number(state[id].updated_at)||0
+  }));
+}
+function mergeServer(items){
+  let changed=false;
+  for(const s of items||[]){
+    if(!s||!s.id) continue;
+    const local=state[s.id], su=Number(s.updated_at)||0;
+    if(!local || su>(Number(local.updated_at)||0)){
+      state[s.id]={done:!!s.done, at:s.at||null, note:s.note||'', updated_at:su};
+      changed=true;
+    }
+  }
+  return changed;
+}
+let syncTimer=null, syncing=false, pendingSync=false;
+function queueSync(){ clearTimeout(syncTimer); syncTimer=setTimeout(()=>{ syncNow(); },900); }
+async function syncNow(){
+  if(localStorage.getItem(AUTH_FLAG)!=='1'){ setSync('locked','Sign in to sync'); return; }
+  if(!navigator.onLine){ setSync('off','Offline — saved locally'); return; }
+  if(syncing){ pendingSync=true; return; }
+  syncing=true; setSync('busy','Syncing…');
+  try{
+    const g=await api('/api/checklist');
+    if(g.status===401){ localStorage.removeItem(AUTH_FLAG); setSync('locked','Sign in to sync'); showLock(); return; }
+    if(!g.ok) throw new Error('pull '+g.status);
+    const data=await g.json();
+    if(mergeServer(data.items)){ saveNow(); render(); }
+
+    const post=await api('/api/checklist',{method:'POST',body:JSON.stringify({items:stateToItems()})});
+    if(post.status===401){ localStorage.removeItem(AUTH_FLAG); setSync('locked','Sign in to sync'); showLock(); return; }
+    if(!post.ok) throw new Error('push '+post.status);
+
+    setSync('ok','Synced');
+  }catch(e){
+    setSync('off','Sync failed — saved locally');
+  }finally{
+    syncing=false;
+    if(pendingSync){ pendingSync=false; queueSync(); }
+  }
+}
+
+/* ---------- passphrase gate ---------- */
+function showLock(){
+  const el=document.getElementById('lock');
+  el.hidden=false;
+  el.innerHTML=`<div class="lock-card">
+     <h2>Checklist access</h2>
+     <p>Enter the shared passphrase to sync your checklist across devices.</p>
+     <form onsubmit="return submitPass(event)">
+       <span class="lock-lab">Passphrase</span>
+       <div class="lock-row">
+         <input id="pp" type="password" autocomplete="current-password">
+         <button class="primary" type="submit">Enter</button>
+       </div>
+       <div class="lock-err" id="pperr"></div>
+     </form>
+     <div class="lock-skip"><button type="button" onclick="dismissLock()">Work offline on this device</button></div>
+   </div>`;
+  setTimeout(()=>{const i=document.getElementById('pp'); if(i) i.focus();},40);
+}
+function hideLock(){ const el=document.getElementById('lock'); el.hidden=true; el.innerHTML=''; }
+function dismissLock(){ hideLock(); setSync('locked','Sign in to sync'); }
+async function submitPass(e){
+  e.preventDefault();
+  const input=document.getElementById('pp'), err=document.getElementById('pperr');
+  err.textContent='';
+  try{
+    const res=await api('/api/login',{method:'POST',body:JSON.stringify({passphrase:input.value})});
+    if(res.ok){ localStorage.setItem(AUTH_FLAG,'1'); hideLock(); syncNow(); }
+    else if(res.status===401){ err.textContent='That passphrase did not match.'; input.select(); }
+    else { err.textContent='Sign-in unavailable right now.'; }
+  }catch(ex){ err.textContent='Could not reach the server.'; }
+  return false;
+}
+
+/* ---------- boot sync ---------- */
+async function initSync(){
+  if(localStorage.getItem(AUTH_FLAG)==='1'){ syncNow(); return; }
+  try{
+    const res=await api('/api/session');
+    if(res.ok){
+      const d=await res.json();
+      if(d.authed){ localStorage.setItem(AUTH_FLAG,'1'); syncNow(); }
+      else { setSync('locked','Sign in to sync'); showLock(); }
+    } else { setSync('off','Offline — saved locally'); }
+  }catch(e){ setSync('off','Offline — saved locally'); }
+}
+window.addEventListener('online',()=>{ if(localStorage.getItem(AUTH_FLAG)==='1') syncNow(); });
+window.addEventListener('offline',()=>setSync('off','Offline — saved locally'));
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && localStorage.getItem(AUTH_FLAG)==='1') syncNow(); });
+
 load();
 </script>
